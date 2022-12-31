@@ -1,0 +1,26 @@
+.main {
+    --square-size: 5rem;
+}
+
+.puzzle {
+    position: relative;
+    border: solid grey 2px;
+    background-color: lightgray;
+    width: calc(var(--square-size) * var(--squares-per-side));
+    height: calc(var(--square-size) * var(--squares-per-side));
+}
+
+.piece {
+    position: absolute;
+    width: var(--square-size);
+    height: var(--square-size);
+    transition: top .75s, left .75s;
+
+    background-color: limegreen;
+    border: yellow solid 2px;
+    border-radius: 0;
+}
+
+.piece:disabled {
+    background-color: red;
+}
