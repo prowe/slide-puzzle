@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { CSSProperties, Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styles from './App.module.css';
 
 const SQUARES_PER_SIDE = 3;
@@ -93,21 +93,31 @@ function shufflePieces(pieces: Piece[]): Piece[] {
   }));
 }
 
+const mainStyle: CSSProperties | any = {
+  '--squares-per-side': SQUARES_PER_SIDE
+};
+
 export default function App() {
-  let [pieces, updatePieces] = useState(initPieceArray);
+  const [pieces, updatePieces] = useState(initPieceArray);
   useEffect(() => {
-    setTimeout(() => updatePieces(shufflePieces), 1000);
+    const handle = setTimeout(() => updatePieces(shufflePieces), 1000);
+    return () => clearTimeout(handle);
+  }, [updatePieces]);
+  const [isStarted, setStarted] = useState(false);
+  useEffect(() => {
+    const handle = setTimeout(() => setStarted(true), 1750);
+    return () => clearTimeout(handle);
   }, [updatePieces]);
 
   const openPosition = findOpenPosition(pieces);
   return (
-    <main className={styles.main} style={{'--squares-per-side': SQUARES_PER_SIDE}}>
-      <section className={styles.puzzle}>
+    <main className={styles.main} style={mainStyle as unknown as CSSProperties}>
+      <section data-squares-per-side={SQUARES_PER_SIDE} className={styles.puzzle}>
         {pieces.map((p, i) => <PieceButton 
           key={i} 
           piece={p} 
           updatePieces={updatePieces}
-          enabled={isPieceBorderingOpenPosition(p, openPosition)}
+          enabled={isPieceBorderingOpenPosition(p, openPosition) && isStarted}
         />)}
       </section>
     </main>
